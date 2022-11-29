@@ -100,7 +100,7 @@ describe("E2E - pbiviz new", () => {
             const archiveName = path.join(folder, `${template}Archive.zip`);
             await download(config.visualTemplates[template], archiveName);
             const stats = await fsPromises.stat(archiveName);
-            await expect(stats.size).toBe(archiveSize);
+            await expect(stats.size).toBeGreaterThanOrEqual(archiveSize);
             await fsPromises.unlink(archiveName);
         });
 
