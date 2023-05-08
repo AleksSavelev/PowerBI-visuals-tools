@@ -813,6 +813,50 @@ describe("E2E - pbiviz package", () => {
             }
         });
     });
+
+    describe("Integrated eslint", () => {
+
+        it("Shouldn't display any errors before building visual", (done) => {
+            const expectedKeywords = [
+                "Unexpected 'debugger' statement",
+                "no-debugger"
+            ];
+            try {
+                startChecker(FileSystem.runPbivizAsync('package'), expectedKeywords)
+                    .then((foundKeywords) => {
+                        expect(foundKeywords.length).toBe(0);
+                        done();
+                    });
+            } catch (error) {
+                expect(error).toBeNull();
+            }
+        });
+
+        it("Shouldn't display any errors before building visual", (done) => {
+            const expectedKeywords = [
+                "Unexpected 'debugger' statement",
+                "no-debugger"
+            ];
+            const jsContent = fs.readFileSync(path.join(visualPath, "src/visual.ts"), 'utf8');
+
+            const errorKeyword = `debugger;`;
+
+            const startIndex = jsContent.indexOf("this.formattingSettingsService");
+            const newContent = jsContent.slice(0, startIndex) + errorKeyword + jsContent.slice(startIndex);
+
+            fs.writeFileSync(path.join(visualPath, "src/visual.ts"), newContent);
+
+            try {
+                startChecker(FileSystem.runPbivizAsync('package'), expectedKeywords)
+                    .then((foundKeywords) => {
+                        expect(foundKeywords.length).not.toBe(0);
+                        done();
+                    });
+            } catch (error) {
+                expect(error).toBeNull();
+            }
+        });
+    });
 });
 
 function replaceAllSubstrings(string = "", keywords = "") {

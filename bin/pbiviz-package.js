@@ -61,6 +61,8 @@ if (!program.pbiviz && !program.resources) {
 }
 
 VisualPackage.loadVisualPackage(cwd).then((visualPackage) => {
+    featureAnalyzer.eslintCheck();
+
     preBuildRules(visualPackage.config).then(() => {
         ConsoleWriter.info('Building visual...');
 
